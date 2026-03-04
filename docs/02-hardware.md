@@ -23,7 +23,7 @@
 | **Case Fans** | 2 x [Noctua P12 PWM 120 mm](https://se.pcpartpicker.com/product/Z7mLrH/noctua-case-fan-nfp12pwm), 1 x [Noctua P14s redux-1200 PWM 140 mm](https://se.pcpartpicker.com/product/xs6BD3/noctua-case-fan-nfp14sredux1200pwm) |
 | **HBA Card** | 9207-8i PCIe 3.0 6Gbps HBA LSI |
 
-**Role:** Storage host (TrueNAS), NPU-SVC, infrastructure services, GitRack LXC
+**Role:** General services (TrueNAS, GitRack LXC, infrastructure)
 
 ---
 
@@ -43,7 +43,7 @@
 | **Security** | Firmware TPM |
 | **Form Factor** | Mini PC / NUC |
 
-**Role:** NPU-accelerated AI services, ai-orchestrator  
+**Role:** NPU-SVC, NPU-accelerated AI, ai-orchestrator  
 **Status:** New/unused, purchased used
 
 ---
@@ -64,7 +64,7 @@
 | **OS** | Proxmox VE |
 | **Form Factor** | Mini PC / NUC |
 
-**Role:** Dedicated Ollama inference workloads  
+**Role:** General compute, Ollama services frontend  
 **Included:** Power adapter, power cord, 2 x SATA cables, HD cable, VESA mounting, user guide
 
 ---
