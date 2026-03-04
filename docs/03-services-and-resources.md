@@ -9,8 +9,8 @@
 | **TrueNAS** | Main Host | VM | 4 | 16GB | 512GB + HDDs | - | Running |
 | **Tailscale** | Main Host | LXC | 1 | 512MB | 2GB | - | Running |
 | **WireGuard** | Main Host | VM | 1 | 512MB | 2GB | - | Running |
-| **Forgejo** | GitRack LXC | Docker | 1 | 512MB | 8GB | 3000, 2222 | Running |
-| **RackPeek** | GitRack LXC | Docker | 1 | 512MB | 4GB | 8080 | Running |
+| **Forgejo** | GitRack LXC (Main Host) | Container in LXC | 1 | 512MB | 8GB | 3000, 2222 | Running |
+| **RackPeek** | GitRack LXC (Main Host) | Container in LXC | 1 | 512MB | 4GB | 8080 | Running |
 
 ### AI Infrastructure Services
 
