@@ -1,0 +1,37 @@
+# Secrets and Environment Files
+.env
+.env.*
+*.key
+*.pem
+secrets/
+credentials/
+
+# Backup Files
+*.bak
+*.backup
+*~
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary Files
+*.tmp
+*.temp
+.cache/
+
+# Logs
+*.log
+logs/
+
+# Personal Notes (if you want to keep private notes locally)
+notes/
+scratch/
