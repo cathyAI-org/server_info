@@ -19,6 +19,7 @@ This homelab runs on a 3-node Proxmox cluster designed to serve 1-2 users with:
 - [04 - Secrets Management](docs/04-secrets-management.md)
 - [05 - Future Plans](docs/05-future-plans.md)
 - [06 - Implementation Ideas](docs/06-implementation-ideas.md)
+- [07 - Development Standards](docs/07-development-standards.md)
 
 ## Quick Links
 
