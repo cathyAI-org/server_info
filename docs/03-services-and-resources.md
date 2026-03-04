@@ -7,8 +7,8 @@
 | Service | Node | Type | CPU | RAM | Disk | Port | Status |
 |---------|------|------|-----|-----|------|------|--------|
 | **TrueNAS** | Main Host | VM | 4 | 16GB | 512GB + HDDs | - | Running |
-| **Tailscale** | All nodes | Native | - | - | - | - | Running |
-| **WireGuard** | Main Host | Container | 1 | 512MB | 2GB | - | Running |
+| **Tailscale** | Main Host | LXC | 1 | 512MB | 2GB | - | Running |
+| **WireGuard** | Main Host | VM | 1 | 512MB | 2GB | - | Running |
 | **Forgejo** | GitRack LXC | Docker | 1 | 512MB | 8GB | 3000, 2222 | Running |
 | **RackPeek** | GitRack LXC | Docker | 1 | 512MB | 4GB | 8080 | Running |
 
@@ -19,8 +19,8 @@
 | **prompt-composer** | catcord VM | Docker | 2 | 2GB | 5GB | 8110 | Running |
 | **ollama-api** | catcord VM | Docker | 2 | 2GB | 5GB | 8100 | Running |
 | **ai-orchestrator** | catcord VM | Docker | 2 | 4GB | 10GB | 8120 | Running |
-| **Ollama** | ESIMOER NUC | Docker | 8 | 32GB | 100GB | 11434 | Running |
-| **NPU-SVC** | ASUS NUC / Main | Docker | 4 | 8GB | 20GB | 8010 | Running |
+| **Ollama** | cathy-AI API LXC (ASUS NUC) | LXC | 8 | 32GB | 100GB | 11434 | Running |
+| **NPU-SVC** | ASUS NUC | Host Service | 4 | 8GB | 20GB | 8010 | Running |
 
 ### API Services
 
@@ -34,7 +34,7 @@
 
 | Service | Node | Type | CPU | RAM | Disk | Port | Status |
 |---------|------|------|-----|-----|------|------|--------|
-| **Chainlit WebUI** | catcord VM | Docker | 2 | 2GB | 5GB | 8000 | Running |
+| **Chainlit WebUI** | openwebui LXC (ESIMOER NUC) | LXC | 2 | 2GB | 5GB | 8000 | Running |
 | **Element (Matrix)** | catcord VM | Docker | 1 | 1GB | 2GB | 8080 | Running |
 
 ### Matrix Ecosystem
@@ -106,15 +106,15 @@ services:
 
 ### Main Host (Ryzen 5 5600G, 32GB RAM)
 - **Allocated:** ~8 cores, ~24GB RAM
-- **Primary:** TrueNAS, NPU-SVC, WireGuard
+- **Primary:** TrueNAS VM, Tailscale LXC, WireGuard VM
 
 ### ESIMOER NUC (i5-1235U, 64GB RAM)
 - **Allocated:** ~8 cores, ~32GB RAM
-- **Primary:** Ollama
+- **Primary:** openwebui LXC (Chainlit WebUI)
 
 ### ASUS NUC 15 Pro+ (Core Ultra 5 225H, 32GB RAM)
-- **Allocated:** ~6 cores, ~12GB RAM
-- **Primary:** NPU-SVC, ai-orchestrator
+- **Allocated:** ~12 cores, ~40GB RAM
+- **Primary:** cathy-AI API LXC (Ollama), NPU-SVC (host service)
 
 ### catcord VM (192.168.1.59)
 - **Allocated:** ~16 cores, ~24GB RAM

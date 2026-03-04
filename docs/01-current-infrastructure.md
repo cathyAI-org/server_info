@@ -21,7 +21,7 @@ The cathyAI homelab is built on a 3-node Proxmox VE cluster with centralized AI 
 
 | Node | Primary Role | Secondary Role |
 |------|--------------|----------------|
-| Main Host | General services | TrueNAS, infrastructure |
+| Main Host | General services | TrueNAS VM, infrastructure |
 | ESIMOER NUC | General compute | Ollama services frontend |
 | ASUS NUC 15 Pro+ | NPU-SVC, NPU-accelerated AI | AI orchestration |
 
