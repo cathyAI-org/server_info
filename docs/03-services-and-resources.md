@@ -49,6 +49,7 @@
 
 | Service | Node | Type | CPU | RAM | Disk | Status |
 |---------|------|------|-----|-----|------|--------|
+| **Home Assistant** | Proxmox Cluster | VM (HAOS) | 2-4 | 6-8GB | 32GB | Planned (migration from RPi4) |
 | **Jellyfin** | Main Host | VM | 4 | 8GB | 50GB | Planned |
 | **Bitwarden** | Main Host | Container | 2 | 2GB | 10GB | Planned |
 

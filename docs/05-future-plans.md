@@ -53,7 +53,19 @@
 
 ### Medium Priority
 
-#### 6. Diary Generation Pipeline
+#### 6. Home Assistant Migration to Proxmox
+**Status:** Planned  
+**Goal:** Migrate from standalone RPi4 to HAOS VM on Proxmox cluster
+
+- Run helper script: `bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/vm/haos-vm.sh)"`
+- New HAOS VM: 2–4 vCPU, 6–8 GB RAM, 32+ GB disk on shared SSD storage
+- USB passthrough for Zigbee/Z-Wave dongles using Vendor/Device ID (stable even after live migration)
+- Migration: full backup from Pi → restore in new VM (zero data loss)
+- Benefits: live migration between 3 nodes with zero downtime, Proxmox snapshots + PBS backups, no SD-card wear, much snappier
+- Avoid Pimox completely — pure x86 VM on existing cluster
+- RPi4 becomes cold spare or repurposed after migration
+
+#### 7. Diary Generation Pipeline
 **Status:** Planned  
 **Goal:** Daily conversation summaries
 
@@ -62,7 +74,7 @@
 - Key events and topics extraction
 - Stored as structured data for RAG
 
-#### 7. Systemd Timers for All Bots
+#### 8. Systemd Timers for All Bots
 **Status:** Planned  
 **Goal:** Reliable bot lifecycle management
 
@@ -71,7 +83,7 @@
 - Enable automatic startup on boot
 - Centralized logging with journald
 
-#### 8. Reverse Proxy with SSL
+#### 9. Reverse Proxy with SSL
 **Status:** Planned  
 **Goal:** Secure external access
 
@@ -83,15 +95,6 @@
 ---
 
 ### Low Priority / Future
-
-#### 9. Home Assistant
-**Status:** Future  
-**Goal:** Smart home automation
-
-- Deploy as VM on Main Host
-- Integrate with IoT devices
-- Automate lighting, climate
-- Create monitoring dashboards
 
 #### 10. Nextcloud
 **Status:** Future  
@@ -128,5 +131,5 @@
 |---------|-------|
 | **Q1 2026** | Cluster finalization, !remove command |
 | **Q2 2026** | Embeddings + distillation, Jellyfin, Bitwarden |
-| **Q3 2026** | Diary generation, systemd timers, reverse proxy |
-| **Q4 2026** | Home Assistant, Nextcloud, monitoring |
+| **Q3 2026** | Home Assistant migration, diary generation, systemd timers |
+| **Q4 2026** | Reverse proxy, Nextcloud, monitoring |

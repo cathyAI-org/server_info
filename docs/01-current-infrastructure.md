@@ -53,7 +53,7 @@ Self-hosted Git and documentation infrastructure:
   - **RackPeek** (8080): Living homelab documentation (aptacode/rackpeek:latest)
     - Web UI: http://192.168.1.61:8080
     - Config: ~/homelab-services/rackpeek-config/config.yaml (bind-mounted)
-    - Documents entire homelab: Proxmox cluster, NUCs, RPi4, Eufy cameras, Synology NAS, PCs
+    - Documents entire homelab: Proxmox cluster, NUCs, RPi4 (Home Assistant - planned migration to Proxmox), Eufy cameras, Synology NAS, PCs
 - **Deployment:** Single LXC with Docker Compose (version 3.9)
 - **Workflow:** Edit in RackPeek UI → git commit & push to Forgejo repo "homelab-rackpeek"
 - **Docker Compose:** ~/homelab-services/docker-compose.yml (TZ=Europe/Stockholm)

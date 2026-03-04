@@ -49,3 +49,18 @@
 | **Main Host** | Primary (TrueNAS) | Light | NPU-SVC |
 | **ESIMOER NUC** | Local | Medium | Ollama |
 | **ASUS NUC 15 Pro+** | Local | Medium | NPU-SVC, ai-orchestrator |
+
+---
+
+## External Hardware
+
+### Raspberry Pi 4 (8GB)
+
+| Component | Specification |
+|-----------|---------------|
+| **Model** | Raspberry Pi 4 Model B |
+| **RAM** | 8GB |
+| **Storage** | SD card |
+| **Current Role** | Home Assistant (standalone) |
+| **Status** | Running stable for ~1 year |
+| **Future** | Planned migration to Proxmox HAOS VM, then cold spare or repurposed |
