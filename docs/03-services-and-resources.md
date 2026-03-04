@@ -9,6 +9,8 @@
 | **TrueNAS** | Main Host | VM | 4 | 16GB | 512GB + HDDs | - | Running |
 | **Tailscale** | All nodes | Native | - | - | - | - | Running |
 | **WireGuard** | Main Host | Container | 1 | 512MB | 2GB | - | Running |
+| **Forgejo** | GitRack LXC | Docker | 1 | 512MB | 8GB | 3000, 2222 | Running |
+| **RackPeek** | GitRack LXC | Docker | 1 | 512MB | 4GB | 8080 | Running |
 
 ### AI Infrastructure Services
 
@@ -69,6 +71,15 @@ Cleaner Bot (Irina)      ← Message cleanup
 News Bot (Delilah)       ← RSS aggregation
 ```
 
+### GitRack LXC (192.168.1.61)
+
+Self-hosted Git and documentation:
+
+```
+Forgejo (3000, SSH 2222) ← Private Git server
+RackPeek (8080)          ← Living homelab documentation
+```
+
 ## Deployment Patterns
 
 ### docker-compose Standard
@@ -107,3 +118,7 @@ services:
 ### catcord VM (192.168.1.59)
 - **Allocated:** ~16 cores, ~24GB RAM
 - **Services:** All APIs, bots, WebUI, Matrix
+
+### GitRack LXC (192.168.1.61)
+- **Allocated:** 2 cores, 2GB RAM, 16GB disk
+- **Services:** Forgejo, RackPeek

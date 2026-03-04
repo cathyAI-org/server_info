@@ -39,6 +39,25 @@ Central hub for all AI and bot services:
 - **Cleaner Bot (Irina)**: Message cleanup
 - **News Bot (Delilah)**: RSS feed aggregation
 
+### GitRack LXC (192.168.1.61)
+
+Self-hosted Git and documentation infrastructure:
+- **Proxmox CT ID:** 204
+- **OS:** Debian 12
+- **Resources:** 2 cores, 2048 MB RAM, 16 GB disk (nvme1tb)
+- **Services:**
+  - **Forgejo** (3000): Self-hosted Git server (codeberg.org/forgejo/forgejo:14)
+    - Web UI: http://192.168.1.61:3000
+    - SSH: Port 2222
+    - Hosts all personal tools and RackPeek config
+  - **RackPeek** (8080): Living homelab documentation (aptacode/rackpeek:latest)
+    - Web UI: http://192.168.1.61:8080
+    - Config: ~/homelab-services/rackpeek-config/config.yaml (bind-mounted)
+    - Documents entire homelab: Proxmox cluster, NUCs, RPi4, Eufy cameras, Synology NAS, PCs
+- **Deployment:** Single LXC with Docker Compose (version 3.9)
+- **Workflow:** Edit in RackPeek UI → git commit & push to Forgejo repo "homelab-rackpeek"
+- **Docker Compose:** ~/homelab-services/docker-compose.yml (TZ=Europe/Stockholm)
+
 ## Storage Layout
 
 ### Main Host Storage

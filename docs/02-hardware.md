@@ -13,7 +13,7 @@
 | **Bulk Storage** | Multiple HDDs (via HBA) |
 | **Case** | Fractal Design Node 804 |
 | **HBA Card** | PCIe HBA for direct HDD passthrough |
-| **Role** | Storage host (TrueNAS), NPU-SVC, infrastructure |
+| **Role** | Storage host (TrueNAS), NPU-SVC, infrastructure, GitRack LXC |
 
 ---
 

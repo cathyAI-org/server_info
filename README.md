@@ -23,6 +23,7 @@ This homelab runs on a 3-node Proxmox cluster designed to serve 1-2 users with:
 ## Quick Links
 
 - **catcord VM** (192.168.1.59): Character API, Identity API, Memory, Bots, WebUI
+- **GitRack LXC** (192.168.1.61): Forgejo + RackPeek
 - **ESIMOER NUC**: Ollama workloads
 - **ASUS NUC 15 Pro+**: NPU-accelerated AI services
 - **Main Host**: TrueNAS storage, infrastructure services
