@@ -81,7 +81,7 @@
 | **CPU** | [AMD Ryzen 7 5800X 3.8 GHz 8-Core](https://se.pcpartpicker.com/product/qtvqqs/amd-ryzen-7-5800x-38-ghz-8-core-processor-100-100000063wof) |
 | **CPU Cooler** | [Noctua NH-U12A 60.09 CFM](https://se.pcpartpicker.com/product/ZLtQzy/noctua-nh-u12a-6009-cfm-cpu-cooler-nh-u12a) |
 | **Motherboard** | [Gigabyte B550 AORUS ELITE AX V2 ATX](https://se.pcpartpicker.com/product/Vb3mP6/gigabyte-b550-aorus-elite-ax-v2-atx-am4-motherboard-b550aorus-elite-axv2) |
-| **Memory** | 64 GB (4 x 16 GB) [Kingston FURY Beast DDR4-3200](https://se.pcpartpicker.com/product/3q2WGX/kingston-fury-beast-32-gb-2-x-16-gb-ddr4-3200-cl16-memory-kf432c16bbk232) |
+| **Memory** | 96 GB (2 x 32 GB + 2 x 16 GB) [Kingston FURY Beast DDR4-3200](https://se.pcpartpicker.com/product/3q2WGX/kingston-fury-beast-32-gb-2-x-16-gb-ddr4-3200-cl16-memory-kf432c16bbk232) |
 | **Storage** | [Samsung 870 Evo 1 TB 2.5" SSD](https://se.pcpartpicker.com/product/7nsnTW/samsung-870-evo-1-tb-25-solid-state-drive-mz-77e1t0bam) |
 | **Storage** | [Samsung 980 Pro w/Heatsink 2 TB M.2 NVMe](https://se.pcpartpicker.com/product/fVC48d/samsung-980-pro-heatsink-2-tb-m2-2280-nvme-solid-state-drive-mz-v8p2t0cw) |
 | **Storage** | [Seagate BarraCuda 2 TB 3.5" 7200 RPM](https://se.pcpartpicker.com/product/CbL7YJ/seagate-barracuda-2tb-35-7200rpm-internal-hard-drive-st2000dm006) |
