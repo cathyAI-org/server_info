@@ -1,5 +1,7 @@
 # Current Infrastructure
 
+**Last verified:** 2026-03-04 (Europe/Stockholm)
+
 ## Overview
 
 The cathyAI homelab is built on a 3-node Proxmox VE cluster with centralized AI services, Matrix bots, and unified prompt composition.
@@ -27,17 +29,28 @@ The cathyAI homelab is built on a 3-node Proxmox VE cluster with centralized AI 
 
 ### catcord VM (192.168.1.59)
 
-Central hub for all AI and bot services:
-- **Character API** (8090): Character card management with public/private views
-- **Identity API** (8091): User identity mapping
-- **catcord-memory** (8095): Conversation memory with RAG
-- **prompt-composer** (8110): Unified prompt assembly
-- **ollama-api** (8100): Ollama proxy and routing
-- **ai-orchestrator** (8120): Multi-model orchestration
-- **Chainlit WebUI** (8000): User interface with ETag caching
-- **Matrix Conduit** (6167): Homeserver
-- **Cleaner Bot (Irina)**: Message cleanup
-- **News Bot (Delilah)**: RSS feed aggregation
+**Public Hostname:** catcord.duckdns.org  
+**Port Forwards:** WAN 80/443 → 192.168.1.59:80/443
+
+Matrix homeserver and related services:
+- **Matrix Conduit** (127.0.0.1:6167): Homeserver (localhost only, proxied by Caddy)
+- **Caddy** (80/443): Reverse proxy with TLS
+- **Character API** (8090): Character card management
+- **Identity API** (8092): User identity mapping
+- **Memory Service** (8090 internal): catcord-memory with Phase 1-3 complete
+- **Online Service** (8088 internal): RSS fetch for news bot
+- **Cleaner Bot:** Media retention (30d non-images, 90d images) + disk pressure cleanup
+- **News Bot (Delilah):** RSS aggregation
+
+**Storage:**
+- Root: 50GB (OS, apps, config)
+- /srv/media: 150GB ext4 (Matrix media only)
+
+**Matrix Config (Locked):**
+- Federation: OFF
+- Registration: OFF (invite-only)
+- Rooms: Unencrypted
+- Upload limit: 100MB
 
 ### GitRack LXC (192.168.1.61)
 
@@ -57,6 +70,12 @@ Self-hosted Git and documentation infrastructure:
 - **Deployment:** Single LXC with Docker Compose (version 3.9)
 - **Workflow:** Edit in RackPeek UI → git commit & push to Forgejo repo "homelab-rackpeek"
 - **Docker Compose:** ~/homelab-services/docker-compose.yml (TZ=Europe/Stockholm)
+
+### Prompt Composer (192.168.1.57:8110)
+
+Unified prompt assembly (NOT on catcord VM):
+- **Repository:** cathyAI-infra
+- **Health:** GET /health
 
 ## Storage Layout
 
@@ -181,6 +200,10 @@ Ubiquiti Dream Router 7 (Wi-Fi 7, 2.5GbE WAN)
 
 - **Service:** 500/500 Mbps fiber
 - **WAN Port:** Ubiquiti Dream Router 7 (2.5GbE)
+- **Public IP:** Not CGNAT
+- **Port Forwards to catcord VM:**
+  - TCP 443 → 192.168.1.59:443
+  - TCP 80 → 192.168.1.59:80
 
 ### Wireless Network
 

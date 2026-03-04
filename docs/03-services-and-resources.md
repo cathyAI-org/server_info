@@ -1,5 +1,7 @@
 # Services and Resources
 
+**Last verified:** 2026-03-04 (Europe/Stockholm)
+
 ## Service Inventory
 
 ### Core Infrastructure
@@ -16,9 +18,7 @@
 
 | Service | Node | Type | CPU | RAM | Disk | Port | Status |
 |---------|------|------|-----|-----|------|------|--------|
-| **prompt-composer** | catcord VM | Docker | 2 | 2GB | 5GB | 8110 | Running |
-| **ollama-api** | catcord VM | Docker | 2 | 2GB | 5GB | 8100 | Running |
-| **ai-orchestrator** | catcord VM | Docker | 2 | 4GB | 10GB | 8120 | Running |
+| **prompt-composer** | 192.168.1.57 | Docker | 2 | 2GB | 5GB | 8110 | Running |
 | **Ollama** | cathy-AI API LXC (ASUS NUC) | LXC | 8 | 32GB | 100GB | 11434 | Running |
 | **NPU-SVC** | ASUS NUC | Host Service | 4 | 8GB | 20GB | 8010 | Running |
 
@@ -26,9 +26,10 @@
 
 | Service | Node | Type | CPU | RAM | Disk | Port | Status |
 |---------|------|------|-----|-----|------|------|--------|
-| **Character API** | catcord VM | Docker | 2 | 2GB | 10GB | 8090 | Running |
-| **Identity API** | catcord VM | Docker | 1 | 1GB | 5GB | 8091 | Running |
-| **catcord-memory** | catcord VM | Docker | 2 | 4GB | 20GB | 8095 | Running |
+| **Character API** | catcord VM (192.168.1.59) | Docker | 2 | 2GB | 10GB | 8090 | Running |
+| **Identity API** | catcord VM (192.168.1.59) | Docker | 1 | 1GB | 5GB | 8092 | Running |
+| **catcord-memory** | catcord VM (192.168.1.59) | Docker | 2 | 4GB | 20GB | 8090 | Running |
+| **catcord-online** | catcord VM (192.168.1.59) | Docker | 1 | 512MB | 2GB | 8088 | Running |
 
 ### Web Interfaces
 
@@ -41,9 +42,10 @@
 
 | Service | Node | Type | CPU | RAM | Disk | Port | Status |
 |---------|------|------|-----|-----|------|------|--------|
-| **Conduit** | catcord VM | Docker | 2 | 4GB | 20GB | 6167 | Running |
-| **Cleaner Bot (Irina)** | catcord VM | Docker | 1 | 512MB | 2GB | - | Running |
-| **News Bot (Delilah)** | catcord VM | Docker | 1 | 512MB | 2GB | - | Running |
+| **Conduit** | catcord VM (192.168.1.59) | Docker | 2 | 4GB | 20GB | 127.0.0.1:6167 | Running |
+| **Caddy** | catcord VM (192.168.1.59) | Docker | 1 | 512MB | 2GB | 80, 443 | Running |
+| **Cleaner Bot** | catcord VM (192.168.1.59) | Docker | 1 | 512MB | 2GB | - | Running |
+| **News Bot (Delilah)** | catcord VM (192.168.1.59) | Docker | 1 | 512MB | 2GB | - | Running |
 
 ### Planned Services
 
@@ -57,20 +59,29 @@
 
 ### catcord VM (192.168.1.59)
 
-Central hub hosting all AI and bot services:
+**Public:** catcord.duckdns.org (ports 80/443 forwarded)
+
+Matrix homeserver and related services:
 
 ```
+Caddy (80/443)           ← Reverse proxy with TLS
+Conduit (127.0.0.1:6167) ← Matrix homeserver (localhost only)
 Character API (8090)     ← Character card management
-Identity API (8091)      ← User identity mapping
-catcord-memory (8095)    ← Conversation memory + RAG
-prompt-composer (8110)   ← Unified prompt assembly
-ollama-api (8100)        ← Ollama proxy/routing
-ai-orchestrator (8120)   ← Multi-model orchestration
-Chainlit WebUI (8000)    ← User interface
-Matrix Conduit (6167)    ← Homeserver
-Cleaner Bot (Irina)      ← Message cleanup
+Identity API (8092)      ← User identity mapping
+catcord-memory (8090)    ← Memory/RAG (Phase 1-3 complete)
+catcord-online (8088)    ← RSS fetch for news bot
+Cleaner Bot              ← Media retention + disk pressure
 News Bot (Delilah)       ← RSS aggregation
 ```
+
+**Storage:**
+- Root: 50GB
+- /srv/media: 150GB (Matrix media only)
+
+**Matrix Config:**
+- Federation: OFF
+- Registration: OFF (invite-only)
+- Rooms: Unencrypted
 
 ### GitRack LXC (192.168.1.61)
 
