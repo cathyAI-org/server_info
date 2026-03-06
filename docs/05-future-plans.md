@@ -49,11 +49,31 @@
 - Backup vault to TrueNAS
 - Configure SMTP notifications
 
+#### 6. Update Firmware on Sonoff Zigbee 3.0 USB Dongle Plus (ZBDongle-P)
+**Status:** Planned  
+**Goal:** Maintain Zigbee coordinator firmware for optimal Home Assistant performance
+
+**Why Priority 1:**
+
+Keeping the dongle's firmware updated is critical for maintaining compatibility with Zigbee2MQTT in Home Assistant, resolving bugs, improving device pairing reliability, enhancing network stability, and ensuring security against known vulnerabilities in older versions.
+
+**Update Procedure:**
+
+1. **Check for the latest firmware:** Visit https://github.com/Koenkk/Z-Stack-firmware/tree/master/coordinator/Z-Stack_3.x.0/bin and download the most recent CC2652P coordinator firmware ZIP file (e.g., CC2652P_coordinator_YYYYMMDD.zip). Unzip it to extract the .hex file.
+
+2. **Prepare the dongle:** Temporarily unplug the dongle from the Home Assistant host and connect it to a computer with USB access. Ensure no other software (like Zigbee2MQTT or ZHA) is accessing it.
+
+3. **Install flashing tool:** Download and install Texas Instruments SmartRF Flash Programmer 2 from https://www.ti.com/tool/FLASH-PROGRAMMER (available for Windows, macOS, or Linux). Alternatively, use the web-based TI UniFlash tool at https://dev.ti.com/uniflash/.
+
+4. **Flash the firmware:** Open the flashing tool, select the CC2652P as the target device, load the extracted .hex file, enable "Erase" and "Program" options, and initiate the flash process. Wait for completion and verify success.
+
+5. **Reconnect and test:** Replug the dongle into the Home Assistant host. In Zigbee2MQTT, restart the add-on and check the logs for the updated firmware version (e.g., "Coordinator firmware version: 'YYYYMMDD'"). If issues persist, adjust the baudrate to 460800 in the configuration.
+
 ---
 
 ### Medium Priority
 
-#### 6. Home Assistant Migration to Proxmox
+#### 7. Home Assistant Migration to Proxmox
 **Status:** Planned  
 **Goal:** Migrate from standalone RPi4 to HAOS VM on Proxmox cluster
 
@@ -65,7 +85,7 @@
 - Avoid Pimox completely — pure x86 VM on existing cluster
 - RPi4 becomes cold spare or repurposed after migration
 
-#### 7. Diary Generation Pipeline
+#### 8. Diary Generation Pipeline
 **Status:** Planned  
 **Goal:** Daily conversation summaries
 
@@ -74,7 +94,7 @@
 - Key events and topics extraction
 - Stored as structured data for RAG
 
-#### 8. Systemd Timers for All Bots
+#### 9. Systemd Timers for All Bots
 **Status:** Planned  
 **Goal:** Reliable bot lifecycle management
 
@@ -83,7 +103,7 @@
 - Enable automatic startup on boot
 - Centralized logging with journald
 
-#### 9. Reverse Proxy with SSL
+#### 10. Reverse Proxy with SSL
 **Status:** Planned  
 **Goal:** Secure external access
 
@@ -92,7 +112,7 @@
 - Set up domain names for services
 - Implement authentication
 
-#### 10. Technitium DNS Server Deployment
+#### 11. Technitium DNS Server Deployment
 **Status:** Planned  
 **Goal:** Self-hosted recursive DNS with ad blocking and privacy features
 
@@ -108,7 +128,7 @@
 
 ### Low Priority / Future
 
-#### 11. Nextcloud
+#### 12. Nextcloud
 **Status:** Future  
 **Goal:** Self-hosted file sync
 
@@ -117,7 +137,7 @@
 - Configure CalDAV, CardDAV
 - Set up mobile sync
 
-#### 12. Prometheus + Grafana
+#### 13. Prometheus + Grafana
 **Status:** Future  
 **Goal:** Comprehensive monitoring
 
@@ -126,7 +146,7 @@
 - Create dashboards (CPU, RAM, disk, network)
 - Set up alerts for thresholds
 
-#### 13. Backup Automation
+#### 14. Backup Automation
 **Status:** Future  
 **Goal:** Automated, tested backups
 
@@ -139,7 +159,7 @@
 
 ### Future / Research
 
-#### 14. HBA Passthrough Storage Mode
+#### 15. HBA Passthrough Storage Mode
 **Status:** Design proposal  
 **Goal:** PCI passthrough of LSI SAS2308 HBA to TrueNAS VM while preserving power-saving disk behavior
 
