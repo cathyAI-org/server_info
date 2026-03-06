@@ -21,9 +21,10 @@
 | **Case** | [Fractal Design Node 804 MicroATX](https://se.pcpartpicker.com/product/yTdqqs/fractal-design-case-fdcanode804blw) |
 | **PSU** | [Fractal Design Ion Gold 850 W 80+ Gold](https://se.pcpartpicker.com/product/8ZJgXL/fractal-design-ion-gold-850-w-80-gold-certified-fully-modular-atx-power-supply-fd-p-ia2g-850) |
 | **Case Fans** | 2 x [Noctua P12 PWM 120 mm](https://se.pcpartpicker.com/product/Z7mLrH/noctua-case-fan-nfp12pwm), 1 x [Noctua P14s redux-1200 PWM 140 mm](https://se.pcpartpicker.com/product/xs6BD3/noctua-case-fan-nfp14sredux1200pwm) |
-| **HBA Card** | 9207-8i PCIe 3.0 6Gbps HBA LSI |
+| **HBA Card** | 9207-8i PCIe 3.0 6Gbps HBA LSI (SAS2308) |
 
-**Role:** General services (TrueNAS VM, GitRack LXC, infrastructure)
+**Role:** General services (TrueNAS VM, GitRack LXC, infrastructure)  
+**Storage Note:** HBA currently managed by host. See [Future Plans - HBA Passthrough](05-future-plans.md#13-hba-passthrough-storage-mode) for proposed PCIe passthrough to TrueNAS VM with power-saving disk management.
 
 ---
 
