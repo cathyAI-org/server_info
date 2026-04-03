@@ -72,15 +72,15 @@ Additional info:
 
 ### Allowed commit types
 
-| Type      | Purpose                              |
-|-----------|--------------------------------------|
-| `feat`    | New feature                          |
-| `fix`     | Bug fix                              |
-| `docs`    | Documentation changes only           |
-| `style`   | Code style / formatting (no logic)   |
-| `refactor`| Refactoring (no behaviour change)    |
-| `test`    | Adding or updating tests             |
-| `chore`   | Maintenance, CI, dependencies        |
+| Type       | Purpose                            |
+|------------|------------------------------------|
+| `feat`     | New feature                        |
+| `fix`      | Bug fix                            |
+| `docs`     | Documentation changes only         |
+| `style`    | Code style / formatting (no logic) |
+| `refactor` | Refactoring (no behaviour change)  |
+| `test`     | Adding or updating tests           |
+| `chore`    | Maintenance, CI, dependencies      |
 
 **Correct example:**
 ```

@@ -16,18 +16,37 @@ The cathyAI homelab is built on a 3-node Proxmox VE cluster with centralized AI 
   - AI/LLM inference with unified orchestration
   - Matrix homeserver with AI-powered bots
   - Centralized memory and prompt composition
-  - Media streaming and secure storage
+  - Secure storage (TrueNAS)
   - Self-hosted productivity tools
+  - Media services (planned — Media LXC on ASUS NUC)
 
 ### Node Roles
 
-| Node | Primary Role | Secondary Role |
-|------|--------------|----------------|
-| Main Host | General services | TrueNAS VM, infrastructure |
-| ESIMOER NUC | General compute | Ollama services frontend |
-| ASUS NUC 15 Pro+ | NPU-SVC, NPU-accelerated AI | AI orchestration |
+| Node             | Primary Role                | Secondary Role                                                                       |
+|------------------|-----------------------------|--------------------------------------------------------------------------------------|
+| Main Host        | General services            | TrueNAS VM, infrastructure                                                           |
+| ESIMOER NUC      | General compute             | Chainlit WebUI                                                                       |
+| ASUS NUC 15 Pro+ | NPU-SVC, NPU-accelerated AI | Ollama API, AI Orchestrator, Prompt Composer. Planned: Media LXC (shared future GPU) |
 
-### catcord VM (192.168.1.59)
+### IP Address Map
+
+| IP           | Host/VM/LXC       | Node            | Purpose                                      |
+|--------------|-------------------|-----------------|----------------------------------------------|
+| 192.168.1.17 | TrueNAS VM        | Main Host       | Bulk storage, backups                        |
+| 192.168.1.51 | Proxmox Main Host | —               | Cluster node, infrastructure                 |
+| 192.168.1.52 | Home Assistant VM | Proxmox Cluster | Smart home (migrated from RPi4)              |
+| 192.168.1.55 | ASUS NUC 15 Pro+  | —               | AI service node, NPU-SVC                     |
+| 192.168.1.57 | cathy-AI API LXC  | ASUS NUC        | Ollama API, AI Orchestrator, Prompt Composer |
+| 192.168.1.59 | catcord VM        | Main Host       | Matrix, bots, APIs                           |
+| 192.168.1.60 | ESIMOER NUC       | —               | Proxmox node, Chainlit WebUI                 |
+| 192.168.1.61 | GitRack LXC       | Main Host       | Forgejo, RackPeek                            |
+| 192.168.1.63 | WireGuard VM      | Main Host       | VPN                                          |
+| 192.168.1.64 | Tailscale LXC     | Main Host       | VPN                                          |
+| 192.168.1.65 | Bitwarden LXC     | Main Host       | Password manager                             |
+
+### Main Host VMs and LXCs
+
+#### catcord VM (192.168.1.59)
 
 **Public Hostname:** catcord.duckdns.org  
 **Port Forwards:** WAN 80/443 → 192.168.1.59:80/443
@@ -37,10 +56,11 @@ Matrix homeserver and related services:
 - **Caddy** (80/443): Reverse proxy with TLS
 - **Character API** (8090): Character card management
 - **Identity API** (8092): User identity mapping
-- **Memory Service** (8090 internal): catcord-memory with Phase 1-3 complete
-- **Online Service** (8088 internal): RSS fetch for news bot
-- **Cleaner Bot:** Media retention (30d non-images, 90d images) + disk pressure cleanup
-- **News Bot (Delilah):** RSS aggregation
+- **Memory Service** (docker-internal `memory:8090` on `catcord_internal` network): catcord-memory, no host-exposed port
+- **Online Service** (docker-internal `online:8088` on `catcord_internal` network): RSS fetch for news bot, no host-exposed port
+- **Cleaner Event Bot** (`cleaner_event`): Event-driven media retention (30d non-images, 90d images) + disk pressure cleanup, always running
+- **Cleaner Bot** (`cleaner_bot`): Scheduled/manual cleanup runs (`restart: no`)
+- **News Bot (Delilah)** (`news_bot`): RSS aggregation, manually triggered (`restart: no`)
 
 **Storage:**
 - Root: 50GB (OS, apps, config)
@@ -52,7 +72,7 @@ Matrix homeserver and related services:
 - Rooms: Unencrypted
 - Upload limit: 100MB
 
-### GitRack LXC (192.168.1.61)
+#### GitRack LXC (192.168.1.61)
 
 Self-hosted Git and documentation infrastructure:
 - **Proxmox CT ID:** 204
@@ -66,25 +86,32 @@ Self-hosted Git and documentation infrastructure:
   - **RackPeek** (8080): Living homelab documentation (aptacode/rackpeek:latest)
     - Web UI: http://192.168.1.61:8080
     - Config: ~/homelab-services/rackpeek-config/config.yaml (bind-mounted)
-    - Documents entire homelab: Proxmox cluster, NUCs, RPi4 (Home Assistant - planned migration to Proxmox), Eufy cameras, Synology NAS, PCs
+    - Documents entire homelab: Proxmox cluster, NUCs, Home Assistant VM, Eufy cameras, Synology NAS, PCs
 - **Deployment:** Single LXC with Docker Compose (version 3.9)
 - **Workflow:** Edit in RackPeek UI → git commit & push to Forgejo repo "homelab-rackpeek"
 - **Docker Compose:** ~/homelab-services/docker-compose.yml (TZ=Europe/Stockholm)
 
-### Prompt Composer (192.168.1.57:8110)
+### ASUS NUC LXCs
 
-Unified prompt assembly (NOT on catcord VM):
-- **Repository:** cathyAI-infra
-- **Health:** GET /health
+#### cathy-AI API LXC (192.168.1.57)
+
+All AI infrastructure services from the `cathyAI-infra` repo, deployed via single docker-compose:
+- **ollama-api** (8100): LLM proxy (container: `cathyai-api`)
+- **prompt-composer** (8110): Unified prompt assembly (container: `cathyai-prompt-composer`)
+- **ai-orchestrator** (8120): Multi-model routing, depends on prompt-composer + ollama-api (container: `cathyai-ai-orchestrator`)
+- **Ollama** (11434): LLM backend (host service on ASUS NUC)
+- **Health:** GET /health on each service
+
+> **Note:** The standalone `cathyAI-API` repo in the GitHub org is superseded by `cathyAI-infra/ollama-api`. The running container `cathyai-api` is built from `cathyAI-infra`.
 
 ## Storage Layout
 
 ### Main Host Storage
 
-| Device | Type | Capacity | Purpose |
-|--------|------|----------|---------|
-| Boot SSD | NVMe/SATA | 512GB | Proxmox OS, system |
-| Fast SSD | SATA/NVMe | 1TB | VM storage, cache |
+| Device   | Type          | Capacity      | Purpose              |
+|----------|---------------|---------------|----------------------|
+| Boot SSD | NVMe          | 512GB         | Proxmox OS, system   |
+| Fast SSD | NVMe          | 1TB           | VM storage, cache    |
 | HDD Pool | HBA-connected | Multiple HDDs | TrueNAS bulk storage |
 
 ### TrueNAS Pools
@@ -95,13 +122,14 @@ Unified prompt assembly (NOT on catcord VM):
 
 ### NUC Storage
 
-- **ESIMOER NUC:** 1TB NVMe SSD (VMs, containers, Ollama models)
-- **ASUS NUC 15 Pro+:** 1TB NVMe SSD (NPU workloads, AI models)
+- **ESIMOER NUC (192.168.1.60):** 1TB NVMe SSD (VMs, containers, Chainlit WebUI)
+- **ASUS NUC 15 Pro+ (192.168.1.55):** 1TB NVMe SSD (NPU workloads, AI models, Ollama API, AI Orchestrator, Prompt Composer)
 
 ## Network Configuration
 
-- **Internal Network:** 192.168.1.0/24
-- **catcord VM:** 192.168.1.59 (central services hub)
+**Internal Network:** 192.168.1.0/24  
+See [IP Address Map](#ip-address-map) for the full host/VM/LXC address table.
+
 - **VPN:** Tailscale + WireGuard for secure remote access
 - **Service Discovery:** Direct IP + port (reverse proxy planned)
 
@@ -112,14 +140,14 @@ Unified prompt assembly (NOT on catcord VM):
 ```
 User Request
     ↓
-Chainlit WebUI (8000)
+Chainlit WebUI (192.168.1.60:8000)
     ↓
-prompt-composer (8110) → Character API (8090)
-    ↓                    → Identity API (8091)
-    ↓                    → catcord-memory (8095)
+prompt-composer (192.168.1.57:8110) → Character API (192.168.1.59:8090)
+    ↓                               → Identity API (192.168.1.59:8092)
+    ↓                               → catcord-memory (docker-internal, no host port)
     ↓
-ai-orchestrator (8120) → ollama-api (8100) → Ollama (ESIMOER)
-    ↓                    → NPU-SVC (8010) → NPU (ASUS/Main)
+ai-orchestrator (192.168.1.57:8120) → ollama-api (192.168.1.57:8100) → Ollama (192.168.1.57:11434)
+    ↓                               → NPU-SVC (192.168.1.55:8010)
     ↓
 Response
 ```
@@ -131,9 +159,9 @@ Matrix Event
     ↓
 Bot (Irina/Delilah)
     ↓
-prompt-composer (8110) → Persona binding
+prompt-composer (192.168.1.57:8110) → Persona binding
     ↓
-ai-orchestrator (8120) → LLM inference
+ai-orchestrator (192.168.1.57:8120) → LLM inference
     ↓
 Matrix Response
 ```
@@ -163,7 +191,6 @@ Ubiquiti Dream Router 7 (Wi-Fi 7, 2.5GbE WAN)
     ├── Main Work/Gaming PC [Cat 8]
     └── SODOLA 8-Port 2.5GbE Switch [10G SFP+]
         ├── Synology NAS [Cat 6a]
-        ├── Raspberry Pi 4 (Home Assistant) [Cat 6]
         ├── Philips 50" PUS8500 TV [Cat 6]
         ├── Zyxel 5-Port Gigabit Switch [Cat 6a]
         │   ├── ASUS NUC 15 Pro+ [Cat 6a]
@@ -175,17 +202,17 @@ Ubiquiti Dream Router 7 (Wi-Fi 7, 2.5GbE WAN)
 
 ### Network Segments
 
-| Segment | VLAN | Purpose | Devices |
-|---------|------|---------|----------|
-| **Management** | Native | Proxmox cluster, infrastructure | DIY PC, ASUS NUC, ESIMOER NUC |
-| **Services** | Native | VMs, LXCs, services | catcord VM, GitRack LXC, TrueNAS |
-| **IoT** | Native | Smart home devices | RPi4, Eufy HomeBase 3, Philips TV |
-| **Client** | Native | Workstations and gaming | Main PC, Console PC, Emulation PC |
-| **Storage** | Native | NAS and backup | Synology NAS, TrueNAS |
+| Segment        | VLAN   | Purpose                         | Devices                           |
+|----------------|--------|---------------------------------|-----------------------------------|
+| **Management** | Native | Proxmox cluster, infrastructure | DIY PC, ASUS NUC, ESIMOER NUC     |
+| **Services**   | Native | VMs, LXCs, services             | catcord VM, GitRack LXC, TrueNAS  |
+| **IoT**        | Native | Smart home devices              | Eufy HomeBase 3, Philips TV       |
+| **Client**     | Native | Workstations and gaming         | Main PC, Console PC, Emulation PC |
+| **Storage**    | Native | NAS and backup                  | Synology NAS, TrueNAS             |
 
 ### Switch Roles
 
-- **SODOLA 2.5GbE:** Central backbone connected to router via 10G SFP+, connects Synology NAS, RPi4, Philips TV, and both downstream switches
+- **SODOLA 2.5GbE:** Central backbone connected to router via 10G SFP+, connects Synology NAS, Philips TV, and both downstream switches
 - **Zyxel 5-Port:** Connects ASUS NUC and ESIMOER NUC to SODOLA switch
 - **TP-Link TL-SG105:** Connects Console Gaming PC and Emulation PC to SODOLA switch
 
@@ -193,7 +220,7 @@ Ubiquiti Dream Router 7 (Wi-Fi 7, 2.5GbE WAN)
 
 - **10G SFP+:** Router to SODOLA switch (backbone)
 - **2.5GbE:** Synology NAS, downstream switches
-- **1GbE:** IoT devices (RPi4, TV), NUCs, gaming PCs
+- **1GbE:** IoT devices (TV), NUCs, gaming PCs
 - **Direct to Router:** DIY Proxmox Node, Main Work/Gaming PC (Cat 8)
 
 ### ISP Connection

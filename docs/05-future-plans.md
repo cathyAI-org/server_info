@@ -31,61 +31,37 @@
 - Memory distillation (summarization)
 - Time-based decay for old memories
 
-#### 4. Jellyfin Deployment
+#### 4. Media LXC on ASUS NUC
 **Status:** Planned  
-**Goal:** Self-hosted media streaming
+**Goal:** Self-hosted media services stack (movies, TV shows, music, audiobooks)
 
-- Deploy on Main Host or NUC
-- Integrate with TrueNAS storage
-- Configure hardware transcoding
-- Set up user accounts and libraries
+**Architecture:**
+- Planned as a dedicated Media LXC on the ASUS NUC 15 Pro+
+- Sits alongside the existing cathy-AI API LXC on the same node
+- Both LXCs are intended to share access to a future external GPU for hardware-accelerated transcoding and AI inference
+- No GPU-sharing implementation details are finalized yet; the ASUS NUC is the planned shared GPU-capable host
 
-#### 5. Bitwarden Deployment
-**Status:** Planned  
-**Goal:** Self-hosted password manager
+**Primary service:**
+- Jellyfin as the main playback and front-end service
 
-- Deploy Vaultwarden (lightweight)
-- Secure with HTTPS (Let's Encrypt)
-- Backup vault to TrueNAS
-- Configure SMTP notifications
+**Future direction — Arr-style media automation stack:**
+- Candidate supporting services such as Sonarr, Radarr, Lidarr, Prowlarr, Bazarr, Jellyseerr, qBittorrent, and VPN/Gluetun-style networking
+- Inspired by [automated media stack workflows](https://youtu.be/twJDyoj0tDc?si=D_7CRrvCX8WeCNxU)
+- Exact service selection and configuration TBD
 
-#### 6. Update Firmware on Sonoff Zigbee 3.0 USB Dongle Plus (ZBDongle-P)
-**Status:** Planned  
-**Goal:** Maintain Zigbee coordinator firmware for optimal Home Assistant performance
+**Storage design:**
+- Bulk media files (movies, TV, music, audiobooks) stored on the TrueNAS VM in a planned 8 TB mirrored storage area
+- TrueNAS is the primary media repository; the Media LXC is the service layer
+- App configs, cache, and transcode working data kept locally on SSD storage within the LXC where appropriate
+- NFS or SMB mount from TrueNAS to the Media LXC (protocol TBD)
 
-**Why Priority 1:**
+**Optional future enhancement:**
+- Audiobook companion app (e.g., Audiobookshelf) may be considered as a future addition
 
-Keeping the dongle's firmware updated is critical for maintaining compatibility with Zigbee2MQTT in Home Assistant, resolving bugs, improving device pairing reliability, enhancing network stability, and ensuring security against known vulnerabilities in older versions.
-
-**Update Procedure:**
-
-1. **Check for the latest firmware:** Visit https://github.com/Koenkk/Z-Stack-firmware/tree/master/coordinator/Z-Stack_3.x.0/bin and download the most recent CC2652P coordinator firmware ZIP file (e.g., CC2652P_coordinator_YYYYMMDD.zip). Unzip it to extract the .hex file.
-
-2. **Prepare the dongle:** Temporarily unplug the dongle from the Home Assistant host and connect it to a computer with USB access. Ensure no other software (like Zigbee2MQTT or ZHA) is accessing it.
-
-3. **Install flashing tool:** Download and install Texas Instruments SmartRF Flash Programmer 2 from https://www.ti.com/tool/FLASH-PROGRAMMER (available for Windows, macOS, or Linux). Alternatively, use the web-based TI UniFlash tool at https://dev.ti.com/uniflash/.
-
-4. **Flash the firmware:** Open the flashing tool, select the CC2652P as the target device, load the extracted .hex file, enable "Erase" and "Program" options, and initiate the flash process. Wait for completion and verify success.
-
-5. **Reconnect and test:** Replug the dongle into the Home Assistant host. In Zigbee2MQTT, restart the add-on and check the logs for the updated firmware version (e.g., "Coordinator firmware version: 'YYYYMMDD'"). If issues persist, adjust the baudrate to 460800 in the configuration.
-
----
 
 ### Medium Priority
 
-#### 7. Home Assistant Migration to Proxmox
-**Status:** Planned  
-**Goal:** Migrate from standalone RPi4 to HAOS VM on Proxmox cluster
-
-- Run helper script: `bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/vm/haos-vm.sh)"`
-- New HAOS VM: 2–4 vCPU, 6–8 GB RAM, 32+ GB disk on shared SSD storage
-- USB passthrough for Zigbee/Z-Wave dongles using Vendor/Device ID (stable even after live migration)
-- Migration: full backup from Pi → restore in new VM (zero data loss)
-- Benefits: live migration between 3 nodes with zero downtime, Proxmox snapshots + PBS backups, no SD-card wear, much snappier
-- Avoid Pimox completely — pure x86 VM on existing cluster
-- RPi4 becomes cold spare or repurposed after migration
-
-#### 8. Diary Generation Pipeline
+#### 5. Diary Generation Pipeline
 **Status:** Planned  
 **Goal:** Daily conversation summaries
 
@@ -94,16 +70,8 @@ Keeping the dongle's firmware updated is critical for maintaining compatibility 
 - Key events and topics extraction
 - Stored as structured data for RAG
 
-#### 9. Systemd Timers for All Bots
-**Status:** Planned  
-**Goal:** Reliable bot lifecycle management
 
-- Replace docker-compose with systemd services
-- Add restart policies and health checks
-- Enable automatic startup on boot
-- Centralized logging with journald
-
-#### 10. Reverse Proxy with SSL
+#### 6. Reverse Proxy with SSL
 **Status:** Planned  
 **Goal:** Secure external access
 
@@ -112,7 +80,7 @@ Keeping the dongle's firmware updated is critical for maintaining compatibility 
 - Set up domain names for services
 - Implement authentication
 
-#### 11. Technitium DNS Server Deployment
+#### 7. Technitium DNS Server Deployment
 **Status:** Planned  
 **Goal:** Self-hosted recursive DNS with ad blocking and privacy features
 
@@ -128,7 +96,7 @@ Keeping the dongle's firmware updated is critical for maintaining compatibility 
 
 ### Low Priority / Future
 
-#### 12. Nextcloud
+#### 8. Nextcloud
 **Status:** Future  
 **Goal:** Self-hosted file sync
 
@@ -137,7 +105,7 @@ Keeping the dongle's firmware updated is critical for maintaining compatibility 
 - Configure CalDAV, CardDAV
 - Set up mobile sync
 
-#### 13. Prometheus + Grafana
+#### 9. Prometheus + Grafana
 **Status:** Future  
 **Goal:** Comprehensive monitoring
 
@@ -146,7 +114,7 @@ Keeping the dongle's firmware updated is critical for maintaining compatibility 
 - Create dashboards (CPU, RAM, disk, network)
 - Set up alerts for thresholds
 
-#### 14. Backup Automation
+#### 10. Backup Automation
 **Status:** Future  
 **Goal:** Automated, tested backups
 
@@ -159,95 +127,37 @@ Keeping the dongle's firmware updated is critical for maintaining compatibility 
 
 ### Future / Research
 
-#### 15. HBA Passthrough Storage Mode
-**Status:** Design proposal  
-**Goal:** PCI passthrough of LSI SAS2308 HBA to TrueNAS VM while preserving power-saving disk behavior
+#### 11. ARM-Based Disc Ripping Machine
+**Status:** Research / candidate  
+**Goal:** Investigate an automated disc-ripping workflow for physical media ingest
 
-**Current State:**
-- Main Host has LSI 9207-8i HBA (SAS2308) with 4 HDDs
-- TrueNAS VM runs on Main Host but HBA not yet passed through
-- Target: 15-minute idle spindown policy (disks can draw 30W+ when spinning)
+- Inspired by [ARM-style automatic ripping machine concepts](https://youtu.be/wPWx6GISIhY?si=PsCgOUu43zWclOO8)
+- Ingest DVDs, Blu-rays, and UHD discs automatically
+- Write ripped output to a TrueNAS staging or media share for the Media LXC to pick up
+- Complements the ASUS NUC Media LXC but is a separate system
 
-**Design Approach:**
+**Candidate placement:**
+- ESIMOER NUC (192.168.1.60)
+- Or a different dedicated mini PC / Proxmox node
+- No final hardware decision yet
 
-Support two storage modes:
+**Requirements:**
+- External USB Blu-ray / UHD optical drive support
+- Software stack for automated ripping (e.g., ARM, MakeMKV, HandBrake — TBD)
+- Network access to TrueNAS media share for output
 
-1. **host-managed** (current):
-   - Disks controlled by Proxmox host
-   - Spindown via hdparm
-   - Direct host monitoring
-
-2. **passthrough-hba** (proposed):
-   - Entire PCIe SAS controller passed to TrueNAS VM
-   - Host avoids disk access entirely
-   - Monitoring relies on cached data or TrueNAS APIs
-
-**Implementation Requirements:**
-
-- Configure PCIe passthrough in Proxmox (IOMMU, VFIO)
-- Pass entire HBA to TrueNAS VM (all 4 HDDs become VM-exclusive)
-- Configure TrueNAS power management:
-  - Set disk spindown to 15 minutes idle
-  - Disable unnecessary SMART polling
-  - Batch health checks to minimize wakeups
-- Modify any host-side monitoring to:
-  - Query TrueNAS API instead of direct disk access
-  - Cache disk metadata (model, serial, capacity)
-  - Schedule SMART checks infrequently (6-24 hour intervals)
-  - Avoid filesystem queries that trigger spinups
-
-**Power Optimization Goals:**
-
-- Disks spin down after 15 minutes idle
-- Disks remain spun down during normal operation
-- Monitoring does not trigger unnecessary wakeups
-- SMART health checks scheduled during maintenance windows
-- Idle power draw minimized (target: <10W for spun-down disks)
-
-**Monitoring Strategy:**
-
-Separate checks into two categories:
-
-- **Low-impact** (frequent, cached):
-  - Disk metadata (model, serial, capacity)
-  - Pool status from TrueNAS API
-  - Non-disk system metrics
-
-- **Disk-impacting** (infrequent, scheduled):
-  - SMART attribute reads (every 6-24 hours)
-  - Scrub operations (weekly/monthly)
-  - Filesystem metadata queries
-
-**Benefits:**
-
-- Native disk management by TrueNAS (better ZFS integration)
-- Cleaner separation: VM owns storage hardware
-- Enables VM migration (with HBA) if needed
-- Maintains low idle power consumption
-- Preserves disk health monitoring
-
-**Risks:**
-
-- Host loses direct disk visibility
-- Requires TrueNAS API for monitoring
-- HBA becomes VM-exclusive (no host access)
-- Migration complexity if HBA is passed through
-
-**Documentation Needed:**
-
-- Proxmox PCIe passthrough configuration guide
-- TrueNAS power management settings
-- Monitoring script modifications
-- Comparison: host-managed vs passthrough modes
-- Best practices for low-power NAS setups
+**Notes:**
+- This is separate from the ASUS NUC Media LXC / AI LXC plan
+- Hardware, software, and placement are all under investigation
+- Not approved or deployed
 
 ---
 
 ## Timeline Estimate
 
-| Quarter | Focus |
-|---------|-------|
-| **Q1 2026** | Cluster finalization, !remove command |
-| **Q2 2026** | Embeddings + distillation, Jellyfin, Bitwarden |
-| **Q3 2026** | Home Assistant migration, diary generation, systemd timers |
-| **Q4 2026** | Reverse proxy, Nextcloud, monitoring |
+| Quarter     | Focus                                    |
+|-------------|------------------------------------------|
+| **Q1 2026** | Cluster finalization, !remove command    |
+| **Q2 2026** | Embeddings + distillation, Media LXC     |
+| **Q3 2026** | Diary generation, reverse proxy          |
+| **Q4 2026** | Nextcloud, monitoring, backup automation |
